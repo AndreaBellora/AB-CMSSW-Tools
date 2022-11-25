@@ -10,7 +10,6 @@ cd $CMSSW_version/src
 cmsenv
 git cms-addpkg RecoPPS
 cd RecoPPS
-git clone git@github.com:AndreaBellora/AB-CMSSW-Tools.git
 git clone git@github.com:AndreaBellora/AB-CMSSW-Tools.git -b $CMSSW_version
 cd ..
 scram b -j10
