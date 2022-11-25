@@ -3,7 +3,7 @@ My tools for CMSSW (reco, noise masking, CRAB etc..)
 
 ## Installation (on lxplus)
 
-"""
+```bash
 CMSSW_version=CMSSW_12_4_0
 cmsrel $CMSSW_version
 cd $CMSSW_version/src
@@ -14,4 +14,4 @@ git clone git@github.com:AndreaBellora/AB-CMSSW-Tools.git
 git clone git@github.com:AndreaBellora/AB-CMSSW-Tools.git -b $CMSSW_version
 cd ..
 scram b -j10
-"""
+```
