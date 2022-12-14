@@ -4,11 +4,11 @@ My tools for CMSSW (reco, noise masking, CRAB etc..)
 ## Installation (on lxplus)
 
 ```bash
-CMSSW_version=CMSSW_12_4_0
+CMSSW_version=<desired_version> # e.g. CMSSW_version=CMSSW_12_4_0
 cmsrel $CMSSW_version
 cd $CMSSW_version/src
 cmsenv
-git cms-addpkg RecoPPS
+git cms-addpkg RecoPPS 
 cd RecoPPS
 git clone git@github.com:AndreaBellora/AB-CMSSW-Tools.git -b $CMSSW_version
 cd ..
