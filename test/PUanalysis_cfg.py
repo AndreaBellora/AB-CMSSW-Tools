@@ -45,11 +45,12 @@ process.source = cms.Source("PoolSource",
 )
 
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000000)
+  input = cms.untracked.int32(-1)
 )
 
 process.PUAnalysis = cms.EDAnalyzer("PUAnalyzer",
-  tagPPSPixeldigi = cms.untracked.InputTag("ctppsPixelDigis"),
+  tagPPSPixelDigi = cms.untracked.InputTag("ctppsPixelDigis"),
+  tagPPSPixelLocalTrack = cms.untracked.InputTag("ctppsPixelLocalTracks"),
   tagRecoVertex = cms.untracked.InputTag("offlinePrimaryVertices"),
   outputFileName = cms.untracked.string("PUAnalysis.root"),
 )
