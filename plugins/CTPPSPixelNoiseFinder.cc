@@ -152,7 +152,7 @@ void CTPPSPixelNoiseFinder::endJob() {
 		occupancy_[plane_id]->SetNameTitle("Occupancy_"+plot_tag,"Occupancy_"+plot_tag+";Column;Row");
 		occupancy_[plane_id]->Scale(1./events_total_);
 		occupancy_[plane_id]->Write();
-		
+
 		// Compute the mask to apply - this assumes no mask was used during data-taking
 		for(auto mod_col = 0; mod_col < maxCols; mod_col++){
 			for(auto mod_row = 0; mod_row < maxRows; mod_row++){
@@ -186,15 +186,15 @@ void CTPPSPixelNoiseFinder::endJob() {
 				int y_bin = mod_row + 1;
 				bool masked = !masks_[plane_id]->GetBinContent(x_bin,y_bin);
 
-        // Compute row/column in the roc reference frame and roc index
-        int roc_row,roc_col,roc;
-        if(thePixIndices.transformToROC(mod_col, mod_row, roc, roc_col, roc_row)){
-            edm::LogWarning("CTPPSPixelNoiseFinder") << "Something went wrong when converting from module to roc coordinates";
-        }
+				// Compute row/column in the roc reference frame and roc index
+				int roc_row,roc_col,roc;
+				if(thePixIndices.transformToROC(mod_col, mod_row, roc, roc_col, roc_row))
+					edm::LogWarning("CTPPSPixelNoiseFinder") << "Something went wrong when converting from module to roc coordinates";
+
 				rocMasks[roc][roc_col][roc_row] = masked;
 			}
 		}
-		
+
 		if(!makeMasks_)
 			continue;
 		
@@ -214,7 +214,6 @@ void CTPPSPixelNoiseFinder::endJob() {
 			else
 				rp = "123";
 		}
-
 		// Create mask files
 		gSystem->Exec("mkdir -p newMasks");
 		TString maskFileName = Form("newMasks/ROC_Masks_module_CTPPS_SEC%i_RP%s_PLN%i.dat",sector,rp.Data(),plane_id.plane());
@@ -231,9 +230,9 @@ void CTPPSPixelNoiseFinder::endJob() {
 				maskFile << colName << "   ";
 				for(auto row = 0; row < 80; row++){
 					if(rocMasks[roc][col][row])
-						maskFile << "1";
-					else
 						maskFile << "0";
+					else
+						maskFile << "1";
 				}
 				maskFile << std::endl;
 			}
@@ -250,11 +249,12 @@ void CTPPSPixelNoiseFinder::endJob() {
 		int noise = planeAndNoise.second;
 		double noise_frac = double(noise*100) / (maxRows * maxCols);
 		totalNoisy += noise;
-		noiseReport += Form("Arm%i_St%i_Pln%i: %i noisy pixels found (%.3f %%)\n",plane_id.arm(),plane_id.station(),plane_id.plane(),noise,noise_frac);
+		noiseReport += Form("Arm%i_St%i_Pln%i: %i noisy pixels found (%.3f %% of the detector plane)\n",plane_id.arm(),plane_id.station(),plane_id.plane(),noise,noise_frac);
 	}
 	noiseReport += Form("TOTAL: %i noisy pixels (%.3f %%)",totalNoisy,double(totalNoisy*100)/(maxRows*maxCols*noisyPixels_.size()));
+	noiseReport += "\nNew mask files are available in the 'newMasks' directory";
 	edm::LogInfo("CTPPSPixelNoiseFinder")
-		<< "    CTPPSPixelNoiseFinder report:\n" << "Events processed: " << events_total_ << "\n" << noiseReport;
+		<< "CTPPSPixelNoiseFinder report:\n" << "Events processed: " << events_total_ << "\n" << noiseReport;
 
 }
 
