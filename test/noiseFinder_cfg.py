@@ -20,18 +20,18 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 # raw data source
 process.source = cms.Source("PoolSource",
-  fileNames = cms.untracked.vstring("file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2022/Global/Run_353709/ALCAPPS_AOD.root"),
+  fileNames = cms.untracked.vstring("file:PPS_AOD_run364748.root"),
 )
 
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(15)
+  input = cms.untracked.int32(-1)
 )
 
 process.ctppsPixelNoiseFinder = cms.EDAnalyzer("CTPPSPixelNoiseFinder",
   tagDigis = cms.InputTag("ctppsPixelDigis"),
-  outputFile = cms.string("NoiseAnalysis.root"),
+  outputFile = cms.string("NoiseAnalysis_run364748.root"),
   makeMasks = cms.bool(True),
-  noiseThreshold = cms.double(0.00000000001),
+  noiseThreshold = cms.double(0.00001),
   verbose = cms.bool(True),
 # enabling 45-210, 45-220, 56-210, 56-220
   enabledRPs = cms.vuint32([2014838784,2023227392,2031616000,2040004608])

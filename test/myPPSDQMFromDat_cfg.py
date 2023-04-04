@@ -613,10 +613,6 @@ process.raw = cms.EDAnalyzer("StreamThingAnalyzer",
     product_to_get = cms.string('m1')
 )
 
-process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(-1)
-)
-
 # load default alignment settings
 process.load("CalibPPS.ESProducers.ctppsAlignment_cff")
 
