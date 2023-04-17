@@ -88,7 +88,8 @@ process.output = cms.OutputModule("PoolOutputModule",
 
 # processing sequences
 process.path = cms.Path(
-  process.ctppsRawToDigi
+  process.raw
+  * process.ctppsRawToDigi
   * process.recoCTPPS
 )
 

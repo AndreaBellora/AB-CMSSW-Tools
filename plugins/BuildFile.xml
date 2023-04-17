@@ -9,6 +9,8 @@
 <use name="Geometry/Records"/>
 <use name="Geometry/VeryForwardGeometryBuilder"/>
 <use name="RecoPPS/Local"/>
+<use name="PhysicsTools/UtilAlgos"/>
+<use name="FWCore/ServiceRegistry"/>
 <library name="AB-CMSSW-ToolsLocalPlugins" file="*.cc">
   <flags EDM_PLUGIN="1"/>
 </library>
