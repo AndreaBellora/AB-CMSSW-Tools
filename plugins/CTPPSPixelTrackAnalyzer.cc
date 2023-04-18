@@ -16,6 +16,7 @@
 
 #include "DataFormats/CTPPSDetId/interface/CTPPSPixelDetId.h"
 #include "DataFormats/CTPPSDigi/interface/CTPPSPixelDigi.h"
+#include "DataFormats/CTPPSReco/interface/CTPPSPixelRecHit.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSPixelLocalTrack.h"
 
 #include "TH1D.h"
@@ -45,6 +46,7 @@ private:
 
   // Data to get
   edm::EDGetTokenT<edm::DetSetVector<CTPPSPixelDigi>> ppsPixelDigiToken_;
+  edm::EDGetTokenT<edm::DetSetVector<CTPPSPixelRecHit>> ppsPixelRecHitToken_;
   edm::EDGetTokenT<edm::DetSetVector<CTPPSPixelLocalTrack>> ppsPixelLocalTrackToken_;
 
   // Hard-coded configs
@@ -55,7 +57,13 @@ private:
   // Declare hists
   map<CTPPSPixelDetId,TH2D*> h2PlContVsNPlInTrack_; // x-axis: fill if plane contributes to track or not (even/odd), y-axis: number of planes in track
   map<CTPPSPixelDetId,TH2D*> h2PlContVsHitsMult_; // x-axis: fill if plane contributes to track or not (even/odd), y-axis: plane multiplicity
- 
+  map<CTPPSPixelDetId,TH2D*> h2XYRecHits_;
+  map<CTPPSPixelDetId,TH2D*> h2XYFittedRecHits_;
+  map<CTPPSPixelDetId,TH1D*> hXResidualsInTrack_; // x-axis residuals for hits in track
+  map<CTPPSPixelDetId,TH1D*> hXResidualsOutTrack_; // x-axis residuals for hits not in track
+  map<CTPPSPixelDetId,TH1D*> hYResidualsInTrack_; // y-axis residuals for hits in track
+  map<CTPPSPixelDetId,TH1D*> hYResidualsOutTrack_; // y-axis residuals for hits not in track
+
   // int digiPerPlaneBins = 50;
   // int digiPerPlaneMax = 100;
   // int digiPerStationBins = 300;
@@ -70,6 +78,8 @@ private:
 CTPPSPixelTrackAnalyzer::CTPPSPixelTrackAnalyzer(const edm::ParameterSet &iConfig) {
   ppsPixelDigiToken_ = consumes<DetSetVector<CTPPSPixelDigi>>(
       iConfig.getUntrackedParameter<edm::InputTag>("tagPPSPixelDigi"));
+  ppsPixelRecHitToken_ = consumes<DetSetVector<CTPPSPixelRecHit>>(
+      iConfig.getUntrackedParameter<edm::InputTag>("tagPPSPixelRecHit"));
   ppsPixelLocalTrackToken_ = consumes<DetSetVector<CTPPSPixelLocalTrack>>(
       iConfig.getUntrackedParameter<edm::InputTag>("tagPPSPixelLocalTrack"));
   Service<TFileService> fs;
@@ -78,8 +88,17 @@ CTPPSPixelTrackAnalyzer::CTPPSPixelTrackAnalyzer(const edm::ParameterSet &iConfi
   for (auto const & arm : arms_)
     for (auto const & station : stations_){
       CTPPSPixelDetId stationId = CTPPSPixelDetId(arm,station,3); // Pixels have always rp=3
-      h2PlContVsNPlInTrack_[stationId] = fs->make<TH2D>("h2PlContVsNPlInTrack", "h2PlContVsNPlInTrack",12,-0.5,11.5,4,2.5,6.5);
-      h2PlContVsHitsMult_[stationId] = fs->make<TH2D>("h2PlContVsHitsMult", "h2PlContVsHitsMult",12,-0.5,11.5,20,0,20);
+      std::string stName;
+      stationId.rpName(stName,CTPPSDetId::nFull);
+
+      TFileDirectory st_subdir = fs->mkdir(stName);
+
+      // Per station plots
+      h2PlContVsNPlInTrack_[stationId] = st_subdir.make<TH2D>("h2PlContVsNPlInTrack", "h2PlContVsNPlInTrack",12,-0.5,11.5,4,2.5,6.5);
+      h2PlContVsHitsMult_[stationId] = st_subdir.make<TH2D>("h2PlContVsHitsMult", "h2PlContVsHitsMult",12,-0.5,11.5,20,0,20);
+      h2PlContVsNPlInTrack_[stationId]->SetNameTitle("h2PlContVsNPlInTrack_"+TString(stName),"h2PlContVsNPlInTrack_"+TString(stName)+";;# Points in track");
+      h2PlContVsHitsMult_[stationId]->SetNameTitle("h2PlContVsHitsMult_"+TString(stName),"h2PlContVsHitsMult_"+TString(stName)+";;Plane multiplicity");
+      // Nice bin naming
       for (int i=1;i<=h2PlContVsHitsMult_[stationId]->GetNbinsX();i++){
         if (i%2 == 1){
           h2PlContVsNPlInTrack_[stationId]->GetXaxis()->SetBinLabel(i,Form("Plane %i",(i-1)/2));
@@ -89,6 +108,27 @@ CTPPSPixelTrackAnalyzer::CTPPSPixelTrackAnalyzer(const edm::ParameterSet &iConfi
           h2PlContVsNPlInTrack_[stationId]->GetXaxis()->SetBinLabel(i,Form("No plane %i",(i-1)/2));
           h2PlContVsHitsMult_[stationId]->GetXaxis()->SetBinLabel(i,Form("No plane %i",(i-1)/2));
         }
+      }
+      
+      // Per plane plots
+      for (auto & plane : planes_){
+        CTPPSPixelDetId planeId(stationId);
+        planeId.setPlane(plane);
+
+        h2XYRecHits_[planeId] = st_subdir.make<TH2D>("h2XYRecHits","h2XYRecHits",200,0,20,200,-12,12);
+        h2XYFittedRecHits_[planeId] = st_subdir.make<TH2D>("h2XYFittedRecHits","h2XYFittedRecHits",200,0,20,200,-12,12);
+        h2XYRecHits_[planeId]->SetNameTitle("h2XYRecHits_"+TString(stName)+"_"+Form("%i",plane),"h2XYRecHits_"+TString(stName)+"_"+Form("%i",plane)+";Residual (mm);");
+        h2XYFittedRecHits_[planeId]->SetNameTitle("h2XYFittedRecHits_"+TString(stName)+"_"+Form("%i",plane),"h2XYFittedRecHits_"+TString(stName)+"_"+Form("%i",plane)+";Residual (mm);");
+
+        hXResidualsInTrack_[planeId] = st_subdir.make<TH1D>("hXResidualsInTrack","hXResidualsInTrack",500,-5,5);
+        hYResidualsInTrack_[planeId] = st_subdir.make<TH1D>("hYResidualsInTrack","hYResidualsInTrack",500,-5,5);
+        hXResidualsInTrack_[planeId]->SetNameTitle("hXResidualsInTrack_"+TString(stName)+"_"+Form("%i",plane),"hXResidualsInTrack_"+TString(stName)+"_"+Form("%i",plane)+";Residual (mm);");
+        hYResidualsInTrack_[planeId]->SetNameTitle("hYResidualsInTrack_"+TString(stName)+"_"+Form("%i",plane),"hYResidualsInTrack_"+TString(stName)+"_"+Form("%i",plane)+";Residual (mm);");
+
+        hXResidualsOutTrack_[planeId] = st_subdir.make<TH1D>("hXResidualsOutTrack","hXResidualsOutTrack",500,-5,5);
+        hYResidualsOutTrack_[planeId] = st_subdir.make<TH1D>("hYResidualsOutTrack","hYResidualsOutTrack",500,-5,5);
+        hXResidualsOutTrack_[planeId]->SetNameTitle("hXResidualsOutTrack_"+TString(stName)+"_"+Form("%i",plane),"hXResidualsOutTrack_"+TString(stName)+"_"+Form("%i",plane)+";Residual (mm);");
+        hYResidualsOutTrack_[planeId]->SetNameTitle("hYResidualsOutTrack_"+TString(stName)+"_"+Form("%i",plane),"hYResidualsOutTrack_"+TString(stName)+"_"+Form("%i",plane)+";Residual (mm);");
       }
     }
 }
@@ -101,14 +141,15 @@ void CTPPSPixelTrackAnalyzer::analyze(const edm::Event &iEvent,const edm::EventS
   Handle<edm::DetSetVector<CTPPSPixelDigi>> ppsPixelDigis;
   iEvent.getByToken(ppsPixelDigiToken_,ppsPixelDigis);
 
+  Handle<edm::DetSetVector<CTPPSPixelRecHit>> ppsPixelRecHits;
+  iEvent.getByToken(ppsPixelRecHitToken_,ppsPixelRecHits);
+
   Handle<edm::DetSetVector<CTPPSPixelLocalTrack>> ppsPixelLocalTracks;
   iEvent.getByToken(ppsPixelLocalTrackToken_,ppsPixelLocalTracks);
 
   // Process tracks 
   for (const auto & ds_track : *ppsPixelLocalTracks){
     CTPPSPixelDetId stationId(ds_track.id);
-      std::string stName;
-      stationId.rpName(stName,CTPPSDetId::nFull);
 
     // Process station tracks
     for (const auto & track : ds_track.data){
@@ -117,24 +158,36 @@ void CTPPSPixelTrackAnalyzer::analyze(const edm::Event &iEvent,const edm::EventS
       for (const auto & plane : planes_){
         CTPPSPixelDetId planeId(stationId);
         planeId.setPlane(plane);
-        h2PlContVsNPlInTrack_[stationId]->SetNameTitle("h2PlContVsNPlInTrack_"+TString(stName),"h2PlContVsNPlInTrack_"+TString(stName)+";;# Points in track");
-        h2PlContVsHitsMult_[stationId]->SetNameTitle("h2PlContVsHitsMult_"+TString(stName),"h2PlContVsHitsMult_"+TString(stName)+";;Plane multiplicity");
 
         // Check if plane contributed to track
         if (trackHits[planeId].data[0].isRealHit()){
           // Plane contributed
           h2PlContVsNPlInTrack_[stationId]->Fill(2*plane,track.numberOfPointsUsedForFit());
           h2PlContVsHitsMult_[stationId]->Fill(2*plane,(*ppsPixelDigis)[planeId].data.size());
+          hXResidualsInTrack_[planeId]->Fill(trackHits[planeId].data[0].xResidual());
+          hYResidualsInTrack_[planeId]->Fill(trackHits[planeId].data[0].yResidual());
+          h2XYFittedRecHits_[planeId]->Fill(trackHits[planeId].data[0].globalCoordinates().x(),trackHits[planeId].data[0].globalCoordinates().y());
         } else {
           // Plane did not contribute
           h2PlContVsNPlInTrack_[stationId]->Fill(2*plane+1,track.numberOfPointsUsedForFit());
           if ((*ppsPixelDigis).find(planeId) != (*ppsPixelDigis).end()){
             h2PlContVsHitsMult_[stationId]->Fill(2*plane+1,(*ppsPixelDigis)[planeId].data.size());
           }
+          if ((*ppsPixelRecHits).find(planeId) != (*ppsPixelRecHits).end()){
+            
+          }
         }
 
+
+        
       }
     } 
+  }
+  for (const auto & ds_rechit : *ppsPixelRecHits){
+    CTPPSPixelDetId planeId(ds_rechit.id);
+    for (const auto & rechit : ds_rechit.data){
+      h2XYRecHits_[planeId]->Fill(rechit.point().x(),rechit.point().y());
+    }
   }
 }
 
@@ -143,6 +196,8 @@ void CTPPSPixelTrackAnalyzer::fillDescriptions(edm::ConfigurationDescriptions &d
   desc.setUnknown();
   desc.add<InputTag>("tagPPSPixelDigi", InputTag("ctppsPixelDigis"))
       ->setComment("inputTag of the PPS pixel digi input");
+  desc.add<InputTag>("tagPPSPixelRecHits", InputTag("ctppsPixelRecHits"))
+      ->setComment("inputTag of the PPS pixel rechit input");
   desc.add<InputTag>("tagPPSPixelLocalTrack", InputTag("ctppsPixelLocalTrack"))
       ->setComment("inputTag of the PPS pixel local track input");
   descriptions.addDefault(desc);

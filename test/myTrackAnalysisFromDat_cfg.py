@@ -292,15 +292,22 @@ process.raw = cms.EDAnalyzer("StreamThingAnalyzer",
 process.ctppsPixelDigis.inputLabel = cms.InputTag("hltPPSCalibrationRaw")
 process.ctppsDiamondRawToDigi.rawDataTag = cms.InputTag("hltPPSCalibrationRaw")
 process.totemRPRawToDigi.rawDataTag = cms.InputTag("hltPPSCalibrationRaw")
+process.totemTimingRawToDigi.rawDataTag = cms.InputTag("hltPPSCalibrationRaw")
 
 process.trackAnalysis = cms.EDAnalyzer("CTPPSPixelTrackAnalyzer",
   tagPPSPixelDigi = cms.untracked.InputTag("ctppsPixelDigis"),
+  tagPPSPixelRecHit = cms.untracked.InputTag("ctppsPixelRecHits"),
   tagPPSPixelLocalTrack = cms.untracked.InputTag("ctppsPixelLocalTracks"),
 )
 
 process.TFileService = cms.Service("TFileService", 
       fileName = cms.string("trackAnalysis.root"),
       closeFileFast = cms.untracked.bool(True)
+)
+
+process.output = cms.OutputModule("PoolOutputModule",
+    fileName = cms.untracked.string('PPS_AOD_366186.root'),
+    outputCommands = cms.untracked.vstring("keep *")
 )
 
 # processing sequences
@@ -311,3 +318,6 @@ process.path = cms.Path(
   * process.trackAnalysis
 )
 
+process.end_path = cms.EndPath(
+  process.output
+)
