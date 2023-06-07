@@ -9,6 +9,8 @@
 <use name="CondFormats/PPSObjects"/>
 <use name="DataFormats/CTPPSDetId"/>
 <use name="CommonTools/Utils"/>
+<use name="PhysicsTools/UtilAlgos"/>
+<use name="FWCore/ServiceRegistry"/>
 <export>
   <lib name="1"/>
 </export>
