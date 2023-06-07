@@ -20,7 +20,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 # raw data source
 process.source = cms.Source("PoolSource",
-  fileNames = cms.untracked.vstring("file:PPS_AOD_run364748.root"),
+  fileNames = cms.untracked.vstring("file:PPS_AOD_run368579.root"),
 )
 
 process.maxEvents = cms.untracked.PSet(
@@ -29,7 +29,7 @@ process.maxEvents = cms.untracked.PSet(
 
 process.ctppsPixelNoiseFinder = cms.EDAnalyzer("CTPPSPixelNoiseFinder",
   tagDigis = cms.InputTag("ctppsPixelDigis"),
-  outputFile = cms.string("NoiseAnalysis_run364748.root"),
+  outputFile = cms.string("NoiseAnalysis_run368579.root"),
   makeMasks = cms.bool(True),
   noiseThreshold = cms.double(0.00001),
   verbose = cms.bool(True),

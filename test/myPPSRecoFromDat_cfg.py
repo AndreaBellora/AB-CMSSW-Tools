@@ -42,13 +42,23 @@ process.MessageLogger = cms.Service("MessageLogger",
 # streamer data source
 process.source = cms.Source("NewEventStreamFileReader",
     fileNames = cms.untracked.vstring(
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0001_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0002_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0003_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0004_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0005_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0006_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0007_streamA_StorageManager.dat",
+      # Beginning of 2023 data-taking
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0001_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0002_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0003_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0004_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0005_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0006_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0007_streamA_StorageManager.dat",
+      # 07/06/2023 - 1 week before TS1
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0001_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0002_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0003_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0004_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0005_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0006_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0007_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0008_streamA_StorageManager.dat",
     ),
     inputFileTransitionsEachEvent = cms.untracked.bool(True)
     #firstEvent = cms.untracked.uint64(10123456835)
