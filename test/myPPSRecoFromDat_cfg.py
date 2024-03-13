@@ -9,7 +9,8 @@ from conditions import *
 def SetConditions(process):
   # chose GT
   process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-  process.GlobalTag = GlobalTag(process.GlobalTag, "130X_dataRun3_Prompt_v1")
+  # process.GlobalTag = GlobalTag(process.GlobalTag, "130X_dataRun3_Prompt_v1")
+  process.GlobalTag = GlobalTag(process.GlobalTag, "auto:run3_data")
 
   # chose LHCInfo
   UseLHCInfoGT(process)
@@ -51,14 +52,22 @@ process.source = cms.Source("NewEventStreamFileReader",
       # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0006_streamA_StorageManager.dat",
       # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run364748/run364748_ls0007_streamA_StorageManager.dat",
       # 07/06/2023 - 1 week before TS1
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0001_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0002_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0003_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0004_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0005_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0006_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0007_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0008_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0001_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0002_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0003_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0004_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0005_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0006_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0007_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0008_streamA_StorageManager.dat",
+      # 11/03/2024 - Beginning of 2024 data-taking
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0001_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0002_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0003_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0004_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0005_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0006_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0007_streamA_StorageManager.dat",
     ),
     inputFileTransitionsEachEvent = cms.untracked.bool(True)
     #firstEvent = cms.untracked.uint64(10123456835)

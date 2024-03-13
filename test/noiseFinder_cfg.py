@@ -7,7 +7,8 @@ process = cms.Process('ANALYSIS', eras.Run3)
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 #  process.GlobalTag = GlobalTag(process.GlobalTag, "112X_dataRun2_v6")
-process.GlobalTag = GlobalTag(process.GlobalTag, "123X_dataRun3_Prompt_v10")
+# process.GlobalTag = GlobalTag(process.GlobalTag, "123X_dataRun3_Prompt_v10")
+process.GlobalTag = GlobalTag(process.GlobalTag, "auto:run3_data")
 
 # minimum of logs
 process.MessageLogger = cms.Service("MessageLogger",
@@ -20,7 +21,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 # raw data source
 process.source = cms.Source("PoolSource",
-  fileNames = cms.untracked.vstring("file:PPS_AOD_run368579.root"),
+  fileNames = cms.untracked.vstring("file:PPS_AOD_run377755.root"),
 )
 
 process.maxEvents = cms.untracked.PSet(
@@ -29,7 +30,7 @@ process.maxEvents = cms.untracked.PSet(
 
 process.ctppsPixelNoiseFinder = cms.EDAnalyzer("CTPPSPixelNoiseFinder",
   tagDigis = cms.InputTag("ctppsPixelDigis"),
-  outputFile = cms.string("NoiseAnalysis_run368579.root"),
+  outputFile = cms.string("NoiseAnalysis_run377755.root"),
   makeMasks = cms.bool(True),
   noiseThreshold = cms.double(0.00001),
   verbose = cms.bool(True),
