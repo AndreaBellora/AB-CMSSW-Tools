@@ -15,11 +15,20 @@ options.register('dataset', '', VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string, "Dataset to process")
 options.register('outputDir', '', VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string, "Output directory")
+options.register('overwrite', False, VarParsing.VarParsing.multiplicity.singleton,
+                 VarParsing.VarParsing.varType.bool, "Overwrite output directory")
 options.parseArguments()
 
-if not os.path.exists(options.outputDir) and options.outputDir != '':
-    os.makedirs(options.outputDir)
-
+if options.outputDir != '':
+    if not os.path.exists(options.outputDir):
+        os.makedirs(options.outputDir)
+    else:
+        if options.overwrite:
+            print(f'Output directory {options.outputDir} already exists. Overwriting.')
+            os.makedirs(options.outputDir, exist_ok=True)
+        else:
+            print(f'Output directory {options.outputDir} already exists. Please set the \'overwrite\' option to True to overwrite it.')
+            sys.exit(1)
 if options.runs == []:
     print("No run numbers provided. Please use the 'runs' option to specify the runs to be processed.")
     sys.exit(1)

@@ -1,0 +1,8 @@
++JobFlavour = "nextweek"
+executable = latencyAnalysis.sh
+output = latencyAnalysis.out
+error = latencyAnalysis.err
+log = latencyAnalysis.log
+x509userproxy = /afs/cern.ch/work/a/abellora/Work/CT-PPS/Commissioning_2024/latencyAnalysis/CMSSW_14_0_1/src/RecoPPS/AB-CMSSW-Tools/test/x509up_u93252
+
+queue
