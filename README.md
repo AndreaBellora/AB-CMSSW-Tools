@@ -4,7 +4,7 @@ My tools for CMSSW (reco, noise masking, CRAB etc..)
 ## Installation (on lxplus)
 
 ```bash
-CMSSW_version=CMSSW_14_0_1
+CMSSW_version=CMSSW_14_0_20
 cmsrel $CMSSW_version
 cd $CMSSW_version/src
 cmsenv
