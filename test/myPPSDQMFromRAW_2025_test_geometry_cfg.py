@@ -1,38 +1,15 @@
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
-process = cms.Process('TESTDQM', eras.Run3)
+process = cms.Process('TESTDQM', eras.Run3, eras.ctpps)
 #process = cms.Process('TEST', eras.Run2_2018, eras.run2_miniAOD_devel)
 
-from conditions import *
+from Configuration.AlCa.GlobalTag import GlobalTag
+from CondCore.CondDB.CondDB_cfi import *
 
-def SetConditions(process):
-  # chose GT
-  process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-  # process.GlobalTag = GlobalTag(process.GlobalTag, "112X_dataRun2_v6")
-  process.GlobalTag = GlobalTag(process.GlobalTag, "140X_dataRun3_Prompt_v4")
-
-  # chose LHCInfo
-  UseLHCInfoGT(process)
-  #UseLHCInfoLocal(process)
-  #UseLHCInfoDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "LHCInfoEndFill_prompt_v2")
-
-  # chose alignment
-  UseAlignmentGT(process)
-  #UseAlignmentLocal(process)
-  #UseAlignmentFile(process, "sqlite_file:/afs/cern.ch/user/c/cmora/public/CTPPSDB/AlignmentSQlite/CTPPSRPRealAlignment_v13Jun19_v1.db", "PPSRPRealAlignment_v13Jun19")
-  #UseAlignmentDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "CTPPSRPAlignment_real_offline_v7")
-
-  # chose optics
-  UseOpticsGT(process)
-  #UseOpticsLocal(process)
-  #UseOpticsFile(process, "sqlite_file:/afs/cern.ch/user/w/wcarvalh/public/CTPPS/optical_functions/PPSOpticalFunctions_2016-2018_v9.db", "PPSOpticalFunctions_test")
-  #UseOpticsDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "PPSOpticalFunctions_offline_v6")
-
-  from Geometry.VeryForwardGeometry.commons_cff import cloneGeometry
-  XMLIdealGeometryESSource_CTPPS, _ctppsGeometryESModule = cloneGeometry('Geometry.VeryForwardGeometry.geometryRPFromDD_2022_cfi')
-  process.XMLIdealGeometryESSource_CTPPS = XMLIdealGeometryESSource_CTPPS
-  process.ctppsGeometryESModule = _ctppsGeometryESModule
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+# process.GlobalTag = GlobalTag(process.GlobalTag, "112X_dataRun2_v6")
+process.GlobalTag = GlobalTag(process.GlobalTag, "140X_dataRun3_Prompt_v4")
 
 # minimum of logs
 process.MessageLogger = cms.Service("MessageLogger",
@@ -44,7 +21,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 )
 
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(10000)
+  input = cms.untracked.int32(200)
 )
 
 # streamer data source
@@ -69,13 +46,6 @@ process.load("EventFilter.CTPPSRawToDigi.ctppsRawToDigi_cff")
 
 # local RP reconstruction chain with standard settings
 process.load("RecoPPS.Configuration.recoCTPPS_cff")
-
-# define conditions
-SetConditions(process)
-CheckConditions()
-
-# Override PPS geometry
-process.load("Geometry.VeryForwardGeometry.geometryRPFromDD_2025_cfi")
 
 ## load DQM framework
 process.load("DQM.Integration.config.environment_cfi")
@@ -106,6 +76,41 @@ process.ctppsTrackDistributionPlotter = cms.EDAnalyzer("CTPPSTrackDistributionPl
 
   outputFile = cms.string("PPS_tracks.root")
 )
+
+from conditions import *
+
+def SetConditions(process):
+  # choose GT
+  process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+  # process.GlobalTag = GlobalTag(process.GlobalTag, "112X_dataRun2_v6")
+  process.GlobalTag = GlobalTag(process.GlobalTag, "140X_dataRun3_Prompt_v4")
+
+  # choose LHCInfo
+  UseLHCInfoGT(process)
+  #UseLHCInfoLocal(process)
+  #UseLHCInfoDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "LHCInfoEndFill_prompt_v2")
+
+  # choose alignment
+  UseAlignmentGT(process)
+  #UseAlignmentLocal(process)
+  #UseAlignmentFile(process, "sqlite_file:/afs/cern.ch/user/c/cmora/public/CTPPSDB/AlignmentSQlite/CTPPSRPRealAlignment_v13Jun19_v1.db", "PPSRPRealAlignment_v13Jun19")
+  #UseAlignmentDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "CTPPSRPAlignment_real_offline_v7")
+
+  # choose optics
+  UseOpticsGT(process)
+  #UseOpticsLocal(process)
+  #UseOpticsFile(process, "sqlite_file:/afs/cern.ch/user/w/wcarvalh/public/CTPPS/optical_functions/PPSOpticalFunctions_2016-2018_v9.db", "PPSOpticalFunctions_test")
+  #UseOpticsDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "PPSOpticalFunctions_offline_v6")
+
+  # choose geometry
+  # UseGeometryGT(process)
+  # UseGeometryLocal(process)
+  # UseGeometryDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "PPSRECO_Geometry_v1_offline")
+  UseGeometryIdeal(process,'Geometry.VeryForwardGeometry.geometryRPFromDD_2025_cfi')
+
+# define conditions
+SetConditions(process)
+CheckConditions()
 
 # processing sequences
 process.path = cms.Path(

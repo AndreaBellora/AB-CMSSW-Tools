@@ -158,6 +158,87 @@ def UseOpticsDB(process, connection, tag):
   
   process.esPreferDBFileOptics = cms.ESPrefer("PoolDBESSource", "PoolDBESSourceOptics")
 
+def UseGeometryLocal(process):
+  global geometryDefined
+  geometryDefined = True
+
+  if not hasattr(process, 'esPreferLocalGeometry'):
+    raise ValueError("local geometry chosen, but process.esPreferLocalGeometry not defined")
+
+def UseGeometryGT(process):
+  global geometryDefined
+  geometryDefined = True
+
+  if hasattr(process, 'esPreferLocalGeometry'):
+    del process.XMLIdealGeometryESSource
+    del process.esPreferLocalGeometry
+
+def UseGeometryFile(process, connection, tag):
+  global geometryDefined
+  geometryDefined = True
+
+  process.load('Geometry.VeryForwardGeometry.geometryRPFromDB_cfi')
+
+  if hasattr(process, 'esPreferLocalGeometry'):
+    del process.XMLIdealGeometryESSource
+    del process.esPreferLocalGeometry
+
+  # Load the ctppsGeometryESModule
+  process.load('Geometry.VeryForwardGeometry.geometryRPFromDB_cfi')
+
+  # Load the PoolDBESSource
+  process.CondDBGeometry = CondDB.clone( connect = connection )
+  process.PoolDBESSourceGeometry = cms.ESSource("PoolDBESSource",
+    process.CondDBGeometry,
+    DumpStat = cms.untracked.bool(False),
+    toGet = cms.VPSet(cms.PSet(
+      record = cms.string("VeryForwardIdealGeometryRecord"),
+      tag = cms.string(tag)
+    )),
+  )
+  
+  process.esPreferDBFileGeometry = cms.ESPrefer("PoolDBESSource", "PoolDBESSourceGeometry")
+
+def UseGeometryDB(process, connection, tag):
+  global geometryDefined
+  geometryDefined = True
+
+  if hasattr(process, 'esPreferLocalGeometryModule') or hasattr(process, 'esPreferLocalGeometrySource'):
+    del process.XMLIdealGeometryESSource
+    del process.esPreferLocalGeometry
+
+  # Load the ctppsGeometryESModule
+  process.load('Geometry.VeryForwardGeometry.geometryRPFromDB_cfi')
+
+  # Load the PoolDBESSource
+  process.CondDBGeometry = CondDB.clone( connect = connection )
+  process.PoolDBESSourceGeometry = cms.ESSource("PoolDBESSource",
+    process.CondDBGeometry,
+    DumpStat = cms.untracked.bool(False),
+    toGet = cms.VPSet(cms.PSet(
+      record = cms.string("VeryForwardIdealGeometryRecord"),
+      tag = cms.string(tag)
+    )),
+  )
+
+  process.esPreferDBFileGeometry = cms.ESPrefer("PoolDBESSource", "PoolDBESSourceGeometry")
+
+def UseGeometryIdeal(process, file):
+  global geometryDefined
+  geometryDefined = True
+
+  if hasattr(process, 'esPreferLocalGeometryModule') or hasattr(process, 'esPreferLocalGeometrySource'):
+    del process.XMLIdealGeometryESSource
+    del process.esPreferLocalGeometry
+
+  from Geometry.VeryForwardGeometry.commons_cff import cloneGeometry
+  XMLIdealGeometryESSource_CTPPS, _ctppsGeometryESModule = cloneGeometry(file)
+  process.XMLIdealGeometryESSource_CTPPS = XMLIdealGeometryESSource_CTPPS
+  process.ctppsGeometryESModule = _ctppsGeometryESModule
+  process.esPreferIdealGeometrySource = cms.ESPrefer("XMLIdealGeometryESSource", "XMLIdealGeometryESSource_CTPPS")
+  process.esPreferIdealGeometryModule = cms.ESPrefer("CTPPSGeometryESModule", "ctppsGeometryESModule")
+
+
 #----------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------
 
@@ -171,3 +252,6 @@ def CheckConditions():
 
   if not opticsDefined:
     raise ValueError("optics not defined")
+  
+  if not geometryDefined:
+    raise ValueError("geometry not defined")
