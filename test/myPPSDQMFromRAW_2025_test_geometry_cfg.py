@@ -50,7 +50,7 @@ process.maxEvents = cms.untracked.PSet(
 # streamer data source
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-      # End of 2024 test files
+      # End of 2024 test files: Run2024I/ZeroBias/RAW/v1/000/386/951/
       "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/test_files/0014198a-9303-44f9-aeec-667ba01de7e7.root",
       "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/test_files/00ef4ade-ae40-4c14-9ec8-ae026589f52d.root"
     ),
@@ -76,7 +76,6 @@ CheckConditions()
 
 # Override PPS geometry
 process.load("Geometry.VeryForwardGeometry.geometryRPFromDD_2025_cfi")
-
 
 ## load DQM framework
 process.load("DQM.Integration.config.environment_cfi")
