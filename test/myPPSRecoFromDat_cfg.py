@@ -9,8 +9,8 @@ from conditions import *
 def SetConditions(process):
   # chose GT
   process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-  # process.GlobalTag = GlobalTag(process.GlobalTag, "130X_dataRun3_Prompt_v1")
-  process.GlobalTag = GlobalTag(process.GlobalTag, "auto:run3_data")
+  # process.GlobalTag = GlobalTag(process.GlobalTag, "auto:run3_data")
+  process.GlobalTag = GlobalTag(process.GlobalTag, "150X_dataRun3_Prompt_Candidate_2025_03_31_13_32_48") # Candidate for 2025 pixel mapping
 
   # chose LHCInfo
   UseLHCInfoGT(process)
@@ -28,6 +28,12 @@ def SetConditions(process):
   #UseOpticsLocal(process)
   #UseOpticsFile(process, "sqlite_file:/afs/cern.ch/user/w/wcarvalh/public/CTPPS/optical_functions/PPSOpticalFunctions_2016-2018_v9.db", "PPSOpticalFunctions_test")
   #UseOpticsDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "PPSOpticalFunctions_offline_v6")
+
+  # choose geometry
+  UseGeometryGT(process)
+  # UseGeometryLocal(process)
+  # UseGeometryDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "PPSRECO_Geometry_v1_offline")
+  # UseGeometryIdeal(process,'Geometry.VeryForwardGeometry.geometryRPFromDD_2025_cfi')
 
 # minimum of logs
 process.MessageLogger = cms.Service("MessageLogger",
@@ -61,13 +67,20 @@ process.source = cms.Source("NewEventStreamFileReader",
       # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0007_streamA_StorageManager.dat",
       # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2023/MiniDAQ/run368579/run368579_ls0008_streamA_StorageManager.dat",
       # 11/03/2024 - Beginning of 2024 data-taking
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0001_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0002_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0003_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0004_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0005_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0006_streamA_StorageManager.dat",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0007_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0001_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0002_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0003_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0004_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0005_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0006_streamA_StorageManager.dat",
+      # "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/MiniDAQ/run377755/run377755_ls0007_streamA_StorageManager.dat",
+      # 02/04/2025 - Beginning of 2025 data-taking
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2025/MiniDAQ/run390124/run390124_ls0001_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2025/MiniDAQ/run390124/run390124_ls0002_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2025/MiniDAQ/run390124/run390124_ls0003_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2025/MiniDAQ/run390124/run390124_ls0004_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2025/MiniDAQ/run390124/run390124_ls0005_streamA_StorageManager.dat",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2025/MiniDAQ/run390124/run390124_ls0006_streamA_StorageManager.dat",
     ),
     inputFileTransitionsEachEvent = cms.untracked.bool(True)
     #firstEvent = cms.untracked.uint64(10123456835)
@@ -79,7 +92,7 @@ process.raw = cms.EDAnalyzer("StreamThingAnalyzer",
 
 
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(1000000)
+  input = cms.untracked.int32(10000000)
 )
 
 # load default alignment settings

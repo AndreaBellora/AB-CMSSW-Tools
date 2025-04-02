@@ -158,6 +158,10 @@ def UseOpticsDB(process, connection, tag):
   
   process.esPreferDBFileOptics = cms.ESPrefer("PoolDBESSource", "PoolDBESSourceOptics")
 
+#----------------------------------------------------------------------------------------------------
+
+geometryDefined = False
+
 def UseGeometryLocal(process):
   global geometryDefined
   geometryDefined = True

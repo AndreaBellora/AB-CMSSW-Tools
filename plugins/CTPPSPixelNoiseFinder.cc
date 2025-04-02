@@ -141,7 +141,7 @@ void CTPPSPixelNoiseFinder::endJob() {
   for(const auto &idAndPlot : hitMaps_){
 		CTPPSPixelDetId plane_id(idAndPlot.first);
 		TString folderName = Form("Arm%i_St%i",plane_id.arm(),plane_id.station());
-    TString plot_tag = Form("Arm%i_St%i_Pln%i",plane_id.arm(),plane_id.station(),plane_id.plane());
+	    TString plot_tag = Form("Arm%i_St%i_Pln%i",plane_id.arm(),plane_id.station(),plane_id.plane());
 
 		f_out->cd(folderName);
 
@@ -197,6 +197,11 @@ void CTPPSPixelNoiseFinder::endJob() {
 
 		if(!makeMasks_)
 			continue;
+		
+		// Don't create mask file if the plane has no noisy pixels
+		if(noisyPixels_[plane_id] == 0)
+			continue;
+		// Planes that had no hits are not considered already
 		
 		// Translate names for POS notation
 		int sector;
