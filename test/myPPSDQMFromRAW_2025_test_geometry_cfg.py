@@ -9,7 +9,7 @@ from CondCore.CondDB.CondDB_cfi import *
 
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 # process.GlobalTag = GlobalTag(process.GlobalTag, "112X_dataRun2_v6")
-process.GlobalTag = GlobalTag(process.GlobalTag, "140X_dataRun3_Prompt_v4")
+process.GlobalTag = GlobalTag(process.GlobalTag, "150X_dataRun3_Prompt_PPS_w9_v2") # Candidate with 2025 geom in IOV (1,)
 
 # minimum of logs
 process.MessageLogger = cms.Service("MessageLogger",
@@ -21,15 +21,15 @@ process.MessageLogger = cms.Service("MessageLogger",
 )
 
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32(200)
+  input = cms.untracked.int32(2000)
 )
 
 # streamer data source
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
       # End of 2024 test files: Run2024I/ZeroBias/RAW/v1/000/386/951/
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/test_files/0014198a-9303-44f9-aeec-667ba01de7e7.root",
-      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/test_files/00ef4ade-ae40-4c14-9ec8-ae026589f52d.root"
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/test_files/Run2024I_ZeroBias_RAW_v1_386951_0.root",
+      "file:/eos/project-c/ctpps/subsystems/Pixel/Commissioning_2024/test_files/Run2024I_ZeroBias_RAW_v1_386951_1.root"
     ),
     #firstEvent = cms.untracked.uint64(10123456835)
 )
@@ -83,7 +83,7 @@ def SetConditions(process):
   # choose GT
   process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
   # process.GlobalTag = GlobalTag(process.GlobalTag, "112X_dataRun2_v6")
-  process.GlobalTag = GlobalTag(process.GlobalTag, "140X_dataRun3_Prompt_v4")
+  process.GlobalTag = GlobalTag(process.GlobalTag, "150X_dataRun3_Prompt_PPS_w9_v2") # Candidate with 2025 geom in IOV (1,)
 
   # choose LHCInfo
   UseLHCInfoGT(process)
@@ -103,10 +103,10 @@ def SetConditions(process):
   #UseOpticsDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "PPSOpticalFunctions_offline_v6")
 
   # choose geometry
-  # UseGeometryGT(process)
+  UseGeometryGT(process)
   # UseGeometryLocal(process)
   # UseGeometryDB(process, "frontier://FrontierProd/CMS_CONDITIONS", "PPSRECO_Geometry_v1_offline")
-  UseGeometryIdeal(process,'Geometry.VeryForwardGeometry.geometryRPFromDD_2025_cfi')
+  # UseGeometryIdeal(process,'Geometry.VeryForwardGeometry.geometryRPFromDD_2025_cfi')
 
 # define conditions
 SetConditions(process)
